@@ -6,6 +6,7 @@ import {
   BUSTING_THRESHOLD,
   figureValues,
   HOUSE_DRAWING_THRESHOLD,
+  SHOE_SHUFFLING_THRESHOLD,
 } from "./constants/cards";
 import { sleep } from "./utils/sleep";
 import { cloneDeep } from "lodash";
@@ -18,6 +19,7 @@ function App() {
   const [houseCards, setHouseCards] = useState<string[]>([]);
   const [playerTurnEnded, setPlayerTurnEnded] = useState(false);
   const [gameState, setGameState] = useState<GameState>();
+  const [canSplit, setCanSplit] = useState(false);
 
   const totalPlayerCount = getCardsCount(playerCards);
   const totalHouseCount = getCardsCount(houseCards);
@@ -76,6 +78,10 @@ function App() {
     setDeck(newDeck);
   };
 
+  const handleSplitAction = (e: MouseEvent) => {
+    e.preventDefault();
+  };
+
   const handleReplay = (e: MouseEvent) => {
     e.preventDefault();
 
@@ -94,10 +100,23 @@ function App() {
 
   useEffect(() => {
     const orderedDeck = getDeck();
-    if (deck.length < 10) {
+    if (deck.length < SHOE_SHUFFLING_THRESHOLD) {
       setDeck(shuffle(orderedDeck));
     }
   }, [deck]);
+
+  useEffect(() => {
+    if (playerTurnEnded || !playerCards.length) {
+      setCanSplit(false);
+
+      return;
+    }
+
+    const firstCardValue = figureValues[playerCards[0][0] as Figures];
+    const secondCardValue = figureValues[playerCards[1][0] as Figures];
+
+    setCanSplit(firstCardValue === secondCardValue && playerCards.length === 2);
+  }, [playerCards, playerTurnEnded]);
 
   useEffect(() => {
     if (isPlayerBusted) {
@@ -142,27 +161,36 @@ function App() {
             (Total count: {totalHouseCount})
           </p>
           {isHouseBusted && <p>HOUSE IS BUSTED!</p>}
-          <p>
-            Player cards:{" "}
-            {playerCards.map((card, index) => {
-              const isLast = index === playerCards.length - 1;
-              if (!isLast) {
-                return card + ", ";
-              }
-              return card;
-            })}
-            (Total count: {totalPlayerCount})
-          </p>
+          <p>Player cards: </p>
+          <div>
+            <p>
+              {playerCards.map((card, index) => {
+                const isLast = index === playerCards.length - 1;
+                if (!isLast) {
+                  return card + ", ";
+                }
+                return card;
+              })}
+              (Total count: {totalPlayerCount})
+            </p>
+          </div>
           {isPlayerBusted && <p>PLAYER IS BUSTED!</p>}
           {!isPlayerBusted && !playerTurnEnded && (
-            <div>
+            <div className="flex flex-row gap-10">
               <button
                 onClick={handleHitAction}
                 className="border border-black rounded-2xl p-2"
               >
                 Hit
               </button>
-
+              {canSplit && (
+                <button
+                  onClick={handleSplitAction}
+                  className="border border-black rounded-2xl p-2"
+                >
+                  Split
+                </button>
+              )}
               <button
                 onClick={handleStandAction}
                 className="border border-black rounded-2xl p-2"

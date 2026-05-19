@@ -1,4 +1,4 @@
-import { figureValues } from "../constants/cards";
+import { BUSTING_THRESHOLD, figureValues } from "../constants/cards";
 import type { Figures } from "../types/figures";
 
 function initialCardCount(cards: string[]) {
@@ -21,7 +21,7 @@ export function getCardsCount(cards: string[]) {
     }
   }
 
-  while (initialCardCount(cards) > 21 && aceCount > 0) {
+  while (finalCount > BUSTING_THRESHOLD && aceCount > 0) {
     finalCount -= 10;
     aceCount--;
   }
