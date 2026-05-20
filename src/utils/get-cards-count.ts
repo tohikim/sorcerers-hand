@@ -1,4 +1,5 @@
-import { BUSTING_THRESHOLD, figureValues } from "../constants/cards";
+import { figureValues } from "../constants/cards";
+import { BUSTING_THRESHOLD } from "../constants/variables";
 import type { Figures } from "../types/figures";
 
 function initialCardCount(cards: string[]) {

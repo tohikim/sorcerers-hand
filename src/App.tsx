@@ -1,13 +1,13 @@
-import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { getDeck } from "./utils/get-deck";
 import { shuffle } from "./utils/shuffle-deck";
 import { getCardsCount } from "./utils/get-cards-count";
+import { figureValues } from "./constants/cards";
 import {
   BUSTING_THRESHOLD,
-  figureValues,
   HOUSE_DRAWING_THRESHOLD,
   SHOE_SHUFFLING_THRESHOLD,
-} from "./constants/cards";
+} from "./constants/variables";
 import { sleep } from "./utils/sleep";
 import { cloneDeep } from "lodash";
 import type { Figures } from "./types/figures";
@@ -15,7 +15,6 @@ import { PlayerHand } from "./components/PlayerHand";
 
 function App() {
   const [deck, setDeck] = useState<string[]>([]);
-  const deckRef = useRef(deck);
   const [houseCards, setHouseCards] = useState<string[]>([]);
   const [playerCards, setPlayerCards] = useState<string[][]>([[]]);
   const [activeHandIndex, setActiveHandIndex] = useState(0);
@@ -32,7 +31,6 @@ function App() {
     const firstCard = deck[0];
     const secondCard = deck[1];
     const thirdCard = deck[2];
-
     setPlayerCards([[firstCard, thirdCard]]);
     setHouseCards([secondCard]);
 
@@ -48,7 +46,7 @@ function App() {
     const topCard = deck[0];
 
     setPlayerCards((prev) => {
-      const targetHand = [...prev[activeHandIndex], topCard];
+      const targetHand = [...(prev[activeHandIndex] || []), topCard];
 
       const prefixState = prev.slice(0, activeHandIndex);
       const suffixState = prev.slice(activeHandIndex + 1, prev.length);
@@ -63,25 +61,63 @@ function App() {
     });
   };
 
-  const handleStandAction = async (e: MouseEvent) => {
-    e.preventDefault();
-
-    setActiveHandIndex((prev) => prev - 1);
-  };
-
   const handleSplitAction = (e: MouseEvent) => {
     e.preventDefault();
 
+    const topCard = deck[0];
+
+    setPlayerCards((prev) => {
+      const targetHand = prev[activeHandIndex];
+      const clonedTartgetHand = cloneDeep(targetHand);
+
+      const prefixState = prev.slice(0, activeHandIndex);
+      const suffixState = prev.slice(activeHandIndex + 1, prev.length);
+
+      const splitCard = clonedTartgetHand.pop();
+      const newHand = [splitCard, topCard];
+
+      return [...prefixState, clonedTartgetHand, newHand, ...suffixState];
+    });
+
     setActiveHandIndex((prev) => prev + 1);
 
-    // deal 1 card to the index to the right (do not relay on state here as it's not yet updated.)
+    setDeck((prev) => {
+      const newDeck = prev.slice(1);
+
+      return newDeck;
+    });
+  };
+
+  const handleHandEnded = async () => {
+    const upcomingIndex = activeHandIndex - 1;
+
+    if (upcomingIndex >= 0 && playerCards[upcomingIndex].length === 1) {
+      const topCard = deck[0];
+
+      setPlayerCards((prev) => {
+        const targetHand = [...(prev[upcomingIndex] || []), topCard];
+
+        const prefixState = prev.slice(0, upcomingIndex);
+        const suffixState = prev.slice(upcomingIndex + 1, prev.length);
+
+        return [...prefixState, targetHand, ...suffixState];
+      });
+
+      setDeck((prev) => {
+        const newDeck = prev.slice(1);
+
+        return newDeck;
+      });
+    }
+
+    setActiveHandIndex(upcomingIndex);
   };
 
   const handleReplay = (e: MouseEvent) => {
     e.preventDefault();
 
     setHouseCards([]);
-    setPlayerCards([]);
+    setPlayerCards([[]]);
     setActiveHandIndex(0);
     setPlayerTurnEnded(false);
     setHandEnded(false);
@@ -96,14 +132,10 @@ function App() {
 
   useEffect(() => {
     const orderedDeck = getDeck();
-    if (
-      deck.length < SHOE_SHUFFLING_THRESHOLD &&
-      activeHandIndex >= 0 &&
-      houseTurnEnded
-    ) {
+    if (deck.length < SHOE_SHUFFLING_THRESHOLD && houseTurnEnded) {
       setDeck(shuffle(orderedDeck));
     }
-  }, [deck]);
+  }, [deck, houseTurnEnded]);
 
   useEffect(() => {
     if (playerTurnEnded || !playerCards.length) {
@@ -134,15 +166,15 @@ function App() {
 
       return;
     }
+
     const activeHand = playerCards[activeHandIndex];
 
     if (
       activeHandIndex >= 0 &&
-      activeHandIndex < playerCards.length &&
       activeHand &&
       getCardsCount(activeHand) > BUSTING_THRESHOLD
     ) {
-      setActiveHandIndex((prev) => prev - 1);
+      handleHandEnded();
     }
   }, [playerCards, activeHandIndex]);
 
@@ -152,20 +184,19 @@ function App() {
     }
 
     (async () => {
-      const newDeck = cloneDeep(deckRef.current);
-      let internalHouseCount = getCardsCount(houseCards);
+      const newDeck = cloneDeep(deck);
+      let internalHouseCards = cloneDeep(houseCards);
 
       do {
         const topCard = newDeck[0];
 
-        internalHouseCount += figureValues[topCard[0] as Figures];
-
+        internalHouseCards = [...internalHouseCards, topCard];
         setHouseCards((prev) => [...prev, topCard]);
 
         newDeck.shift();
 
         await sleep(1000);
-      } while (internalHouseCount < HOUSE_DRAWING_THRESHOLD);
+      } while (getCardsCount(internalHouseCards) < HOUSE_DRAWING_THRESHOLD);
 
       setHandEnded(true);
       setDeck(newDeck);
@@ -229,7 +260,10 @@ function App() {
                 </button>
               )}
               <button
-                onClick={handleStandAction}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleHandEnded();
+                }}
                 className="border border-black rounded-2xl p-2"
               >
                 Stand

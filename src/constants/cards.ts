@@ -33,7 +33,3 @@ export const figureValues: {
   Q: 10,
   K: 10,
 };
-
-export const BUSTING_THRESHOLD = 21;
-export const HOUSE_DRAWING_THRESHOLD = 17;
-export const SHOE_SHUFFLING_THRESHOLD = 10;
