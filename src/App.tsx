@@ -26,39 +26,50 @@ function App() {
   const isHouseBusted = totalHouseCount > BUSTING_THRESHOLD;
   const houseTurnEnded = totalHouseCount >= HOUSE_DRAWING_THRESHOLD;
 
-  const handleStartGame = (e: MouseEvent) => {
+  const drawPlayerCard = (handIndex = activeHandIndex) => {
+    const topCard = deck[0];
+
+    setPlayerCards((prev) => {
+      const targetHand = [...prev[handIndex], topCard];
+
+      const prefixState = prev.slice(0, handIndex);
+      const suffixState = prev.slice(handIndex + 1, prev.length);
+
+      return [...prefixState, targetHand, ...suffixState];
+    });
+
+    setDeck((prev) => prev.slice(1));
+  };
+
+  const handleStartGame = async (e: MouseEvent) => {
     e.preventDefault();
+
+    await sleep(1000);
     const firstCard = deck[0];
     const secondCard = deck[1];
     const thirdCard = deck[2];
     setPlayerCards([[firstCard, thirdCard]]);
     setHouseCards([secondCard]);
 
-    setDeck((prev) => {
-      const newDeck = prev.slice(3);
+    setDeck((prev) => prev.slice(3));
+  };
 
-      return newDeck;
-    });
+  const handleReplay = (e: MouseEvent) => {
+    e.preventDefault();
+
+    setHouseCards([]);
+    setPlayerCards([[]]);
+    setActiveHandIndex(0);
+    setPlayerTurnEnded(false);
+    setHandEnded(false);
+
+    handleStartGame(e);
   };
 
   const handleHitAction = (e: MouseEvent) => {
     e.preventDefault();
-    const topCard = deck[0];
 
-    setPlayerCards((prev) => {
-      const targetHand = [...(prev[activeHandIndex] || []), topCard];
-
-      const prefixState = prev.slice(0, activeHandIndex);
-      const suffixState = prev.slice(activeHandIndex + 1, prev.length);
-
-      return [...prefixState, targetHand, ...suffixState];
-    });
-
-    setDeck((prev) => {
-      const newDeck = prev.slice(1);
-
-      return newDeck;
-    });
+    drawPlayerCard();
   };
 
   const handleSplitAction = (e: MouseEvent) => {
@@ -81,11 +92,7 @@ function App() {
 
     setActiveHandIndex((prev) => prev + 1);
 
-    setDeck((prev) => {
-      const newDeck = prev.slice(1);
-
-      return newDeck;
-    });
+    setDeck((prev) => prev.slice(1));
   };
 
   const handleHandEnded = async () => {
@@ -103,26 +110,10 @@ function App() {
         return [...prefixState, targetHand, ...suffixState];
       });
 
-      setDeck((prev) => {
-        const newDeck = prev.slice(1);
-
-        return newDeck;
-      });
+      setDeck((prev) => prev.slice(1));
     }
 
     setActiveHandIndex(upcomingIndex);
-  };
-
-  const handleReplay = (e: MouseEvent) => {
-    e.preventDefault();
-
-    setHouseCards([]);
-    setPlayerCards([[]]);
-    setActiveHandIndex(0);
-    setPlayerTurnEnded(false);
-    setHandEnded(false);
-
-    handleStartGame(e);
   };
 
   useEffect(() => {
@@ -131,9 +122,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const orderedDeck = getDeck();
     if (deck.length < SHOE_SHUFFLING_THRESHOLD && houseTurnEnded) {
-      setDeck(shuffle(orderedDeck));
+      const newDeck = getDeck();
+      setDeck(shuffle(newDeck));
     }
   }, [deck, houseTurnEnded]);
 
@@ -225,7 +216,7 @@ function App() {
             })}
             (Total count: {totalHouseCount})
           </p>
-          {isHouseBusted && <p>HOUSE IS BUSTED!</p>}
+          {isHouseBusted && <p>House busted</p>}
           <p className="m-0">Player cards: </p>
           {playerCards.map((cards, index) => {
             return (

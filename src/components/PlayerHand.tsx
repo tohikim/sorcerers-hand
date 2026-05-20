@@ -67,7 +67,7 @@ export const PlayerHand = ({
       {!!handState && (
         <p>{handState.charAt(0).toUpperCase() + handState.slice(1)}</p>
       )}
-      {isPlayerBusted && <p className="text-red-500">PLAYER IS BUSTED!</p>}
+      {isPlayerBusted && <p className="text-red-500">busted</p>}
     </div>
   );
 };
