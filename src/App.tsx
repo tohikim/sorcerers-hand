@@ -1,4 +1,4 @@
-import { useEffect, useState, type MouseEvent } from "react";
+import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import { getDeck } from "./utils/get-deck";
 import { shuffle } from "./utils/shuffle-deck";
 import { getCardsCount } from "./utils/get-cards-count";
@@ -12,7 +12,6 @@ import { sleep } from "./utils/sleep";
 import { cloneDeep } from "lodash";
 import type { Figures } from "./types/figures";
 import { PlayerHand } from "./components/PlayerHand";
-// import type { ChipValue } from "./types/chip-values";
 import { chipDenominations } from "./constants/chips";
 
 function App() {
@@ -26,40 +25,29 @@ function App() {
   const [gameEnded, setGameEnded] = useState(false);
   const [bankTotal, setBankTotal] = useState(1500);
   const [betValues, setBetValues] = useState<number[]>([]);
-  const [prevBetValues, setPrevBetValues] = useState<number[]>([]);
+  const [previousBetValues, setPreviousBetValues] = useState<number[]>([]);
 
   const betTotal = betValues.reduce((acc, cur) => acc + cur, 0);
-  // const hasCredits = bankTotal > 0 || betTotal >= 0;
 
   const totalHouseCount = getCardsCount(houseCards);
   const isHouseBusted = totalHouseCount > BUSTING_THRESHOLD;
-  const houseTurnEnded = totalHouseCount >= HOUSE_DRAWING_THRESHOLD;
   const gameSetupDone =
     playerCards[activeHandIndex >= 0 ? activeHandIndex : 0].length >= 2;
-  const hasTwoArrayOfCards = playerCards?.[activeHandIndex]?.length === 2;
-  const firstCardValue =
-    figureValues[playerCards?.[activeHandIndex]?.[0]?.[0] as Figures];
-  const secondCardValue =
-    figureValues[playerCards?.[activeHandIndex]?.[1]?.[0] as Figures];
 
-  // const chipOneCount = ((bankTotal / 1) as ChipValue) || 0;
-  // const chipFiveCount = ((bankTotal / 5) as ChipValue) || 0;
-  // const chipTenCount = ((bankTotal / 10) as ChipValue) || 0;
-  // const chipFiftyCount = ((bankTotal / 50) as ChipValue) || 0;
-  // const chipHundredCount = ((bankTotal / 100) as ChipValue) || 0;
-  // const chips = [
-  //   chipOneCount,
-  //   chipFiveCount,
-  //   chipTenCount,
-  //   chipFiftyCount,
-  //   chipHundredCount,
-  // ];
+  const canSplit = useMemo(() => {
+    const hasExactlyTwoCards = playerCards?.[activeHandIndex]?.length === 2;
+    const firstCardValue =
+      figureValues[playerCards?.[activeHandIndex]?.[0]?.[0] as Figures];
+    const secondCardValue =
+      figureValues[playerCards?.[activeHandIndex]?.[1]?.[0] as Figures];
 
-  const canSplit =
-    hasTwoArrayOfCards &&
-    !playerTurnEnded &&
-    firstCardValue !== undefined &&
-    firstCardValue === secondCardValue;
+    return (
+      hasExactlyTwoCards &&
+      !playerTurnEnded &&
+      firstCardValue !== undefined &&
+      firstCardValue === secondCardValue
+    );
+  }, [playerTurnEnded, playerCards, activeHandIndex]);
 
   const drawPlayerCard = (card: string, handIndex = activeHandIndex) => {
     setPlayerCards((prev) => {
@@ -72,31 +60,6 @@ function App() {
     });
   };
 
-  const setUpTable = async () => {
-    setGameStarted(true);
-
-    // const freshDeck = shuffle(getDeck());
-
-    // const firstCard = freshDeck[0];
-    // const secondCard = freshDeck[1];
-    // const thirdCard = freshDeck[2];
-
-    // setDeck(freshDeck.slice(3));
-
-    // if (dealMade) {
-    //   await sleep(1000);
-    //   drawPlayerCard(firstCard, 0);
-
-    //   await sleep(1000);
-    //   setHouseCards([secondCard]);
-
-    //   await sleep(1000);
-    //   drawPlayerCard(thirdCard, 0);
-
-    //   setDeck((prev) => prev.slice(3));
-    // }
-  };
-
   const handleReplay = async (e: MouseEvent) => {
     e.preventDefault();
 
@@ -106,8 +69,7 @@ function App() {
     setHouseCards([]);
     setPlayerCards([[]]);
     setDealMade(false);
-
-    await setUpTable();
+    setBetValues([]);
   };
 
   const undoLatestBetChip = (e: MouseEvent) => {
@@ -122,13 +84,20 @@ function App() {
     e.preventDefault();
     setDealMade(true);
 
-    const freshDeck = shuffle(getDeck());
+    setPreviousBetValues(cloneDeep(betValues));
 
-    const firstCard = freshDeck[0];
-    const secondCard = freshDeck[1];
-    const thirdCard = freshDeck[2];
+    let clonedDeck = cloneDeep(deck);
 
-    setDeck(freshDeck.slice(3));
+    if (clonedDeck.length < SHOE_SHUFFLING_THRESHOLD) {
+      const cleanDeck = getDeck();
+      clonedDeck = shuffle(cleanDeck);
+    }
+
+    const firstCard = clonedDeck[0];
+    const secondCard = clonedDeck[1];
+    const thirdCard = clonedDeck[2];
+
+    setDeck(clonedDeck.slice(3));
 
     await sleep(1000);
     drawPlayerCard(firstCard, 0);
@@ -138,14 +107,10 @@ function App() {
 
     await sleep(1000);
     drawPlayerCard(thirdCard, 0);
-
-    setPrevBetValues(betValues);
   };
 
   const handleAllIn = (e: MouseEvent) => {
     e.preventDefault();
-
-    if (bankTotal <= 0) return;
 
     let remainingFunds = bankTotal;
     const newChips: number[] = [];
@@ -165,8 +130,10 @@ function App() {
     setBankTotal(remainingFunds);
   };
 
-  const handleReplayLastBet = (e: MouseEvent) => {
+  const handleRedoLastBet = (e: MouseEvent) => {
     e.preventDefault();
+
+    setBetValues(previousBetValues);
   };
 
   const handleHitAction = (e: MouseEvent) => {
@@ -179,7 +146,6 @@ function App() {
 
   const handleSplitAction = (e: MouseEvent) => {
     e.preventDefault();
-    if (deck.length < 1) return;
 
     const topCard = deck[0];
 
@@ -187,11 +153,9 @@ function App() {
       const prefixState = prev.slice(0, activeHandIndex);
       const suffixState = prev.slice(activeHandIndex + 1, prev.length);
 
-      const targetHand = [...prev[activeHandIndex]];
+      const targetHand = cloneDeep(prev[activeHandIndex]);
 
       const split = targetHand.pop();
-
-      if (!split) return prev;
 
       const newHand = [split, topCard];
 
@@ -214,13 +178,6 @@ function App() {
 
     setActiveHandIndex(upcomingIndex);
   };
-
-  useEffect(() => {
-    if (deck.length < SHOE_SHUFFLING_THRESHOLD) {
-      const newDeck = getDeck();
-      setDeck(shuffle(newDeck));
-    }
-  }, [deck, houseTurnEnded]);
 
   useEffect(() => {
     const allPlayerHandsAreBusted = playerCards.every(
@@ -277,7 +234,7 @@ function App() {
         <button
           onClick={(e) => {
             e.preventDefault();
-            setUpTable();
+            setGameStarted(true);
           }}
           className="border border-black rounded-2xl p-2"
         >
@@ -351,7 +308,7 @@ function App() {
             {!!betValues[0] && (
               <div className="flex flex-row gap-10 justify-center items-center">
                 <button
-                  className="rounded-[50%] border border-black p-2 w-25 h-25"
+                  className="rounded-[50%] border border-black p-2 w-25 h-25 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                   onClick={undoLatestBetChip}
                 >
                   {betValues[betValues.length - 1]}
@@ -381,7 +338,7 @@ function App() {
                                 setBankTotal((prev) => prev - chip);
                                 setBetValues((prev) => [...prev, chip]);
                               }}
-                              className="border border-black rounded-[50%] h-25 w-25 p-2"
+                              className="border border-black rounded-[50%] h-25 w-25 p-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                             >
                               {chip}
                             </button>
@@ -396,12 +353,12 @@ function App() {
                       >
                         ALL IN
                       </button>
-                      {!!prevBetValues[0] && (
+                      {!!previousBetValues.length && !betValues.length && (
                         <button
                           className="border border-black rounded-2xl p-2"
-                          onClick={handleReplayLastBet}
+                          onClick={handleRedoLastBet}
                         >
-                          Replay last bet
+                          Redo last bet
                         </button>
                       )}
                       {!!betValues[0] && (
@@ -413,7 +370,7 @@ function App() {
                             setBankTotal(1500);
                           }}
                         >
-                          Reset the bet
+                          Clear
                         </button>
                       )}
                     </div>
