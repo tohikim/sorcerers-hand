@@ -4,17 +4,17 @@ export const suits = ["s", "c", "h", "d"];
 export const figures = [
   "A",
   "2",
-  "3",
-  "4",
-  "5",
-  "6",
-  "7",
-  "8",
-  "9",
-  "T",
-  "J",
-  "Q",
-  "K",
+  // "3",
+  // "4",
+  // "5",
+  // "6",
+  // "7",
+  // "8",
+  // "9",
+  // "T",
+  // "J",
+  // "Q",
+  // "K",
 ];
 export const figureValues: {
   [key in Figures]: number;
