@@ -12,7 +12,7 @@ import { sleep } from "./utils/sleep";
 import { cloneDeep } from "lodash";
 import type { Figures } from "./types/figures";
 import { PlayerHand } from "./components/PlayerHand";
-import { chipDenominations } from "./constants/chips";
+import { chipDenominations, PLAYER_BANKROLL } from "./constants/chips";
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -23,7 +23,7 @@ function App() {
   const [activeHandIndex, setActiveHandIndex] = useState(0);
   const [playerTurnEnded, setPlayerTurnEnded] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
-  const [bankTotal, setBankTotal] = useState(1500);
+  const [bankTotal, setBankTotal] = useState(PLAYER_BANKROLL);
   const [betValues, setBetValues] = useState<number[]>([]);
   const [previousBetValues, setPreviousBetValues] = useState<number[]>([]);
 
@@ -367,7 +367,7 @@ function App() {
                           onClick={(e: MouseEvent) => {
                             e.preventDefault();
                             setBetValues([]);
-                            setBankTotal(1500);
+                            setBankTotal(PLAYER_BANKROLL);
                           }}
                         >
                           Clear
@@ -381,7 +381,7 @@ function App() {
                     onClick={(e: MouseEvent) => {
                       e.preventDefault();
                       setBetValues([]);
-                      setBankTotal(1500);
+                      setBankTotal(PLAYER_BANKROLL);
                     }}
                   >
                     Reset the bet
