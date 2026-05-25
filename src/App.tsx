@@ -12,22 +12,30 @@ import { sleep } from "./utils/sleep";
 import { cloneDeep } from "lodash";
 import type { Figures } from "./types/figures";
 import { PlayerHand } from "./components/PlayerHand";
+// import type { ChipValue } from "./types/chip-values";
 import { chipDenominations, PLAYER_BANKROLL } from "./constants/chips";
+
+interface PlayerHand {
+  cards: string[];
+  betValues: number[];
+}
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
   const [dealMade, setDealMade] = useState(false);
   const [deck, setDeck] = useState<string[]>([]);
   const [houseCards, setHouseCards] = useState<string[]>([]);
-  const [playerCards, setPlayerCards] = useState<string[][]>([[]]);
+  const [playerCards, setPlayerCards] = useState<PlayerHand[]>([]);
   const [activeHandIndex, setActiveHandIndex] = useState(0);
   const [playerTurnEnded, setPlayerTurnEnded] = useState(false);
   const [gameEnded, setGameEnded] = useState(false);
   const [bankTotal, setBankTotal] = useState(PLAYER_BANKROLL);
   const [betValues, setBetValues] = useState<number[]>([]);
   const [previousBetValues, setPreviousBetValues] = useState<number[]>([]);
+  // prevWonBankTotal useRef
 
   const betTotal = betValues.reduce((acc, cur) => acc + cur, 0);
+  // const hasCredits = bankTotal > 0 || betTotal >= 0;
 
   const totalHouseCount = getCardsCount(houseCards);
   const isHouseBusted = totalHouseCount > BUSTING_THRESHOLD;
@@ -48,6 +56,19 @@ function App() {
       firstCardValue === secondCardValue
     );
   }, [playerTurnEnded, playerCards, activeHandIndex]);
+
+  // const chipOneCount = ((bankTotal / 1) as ChipValue) || 0;
+  // const chipFiveCount = ((bankTotal / 5) as ChipValue) || 0;
+  // const chipTenCount = ((bankTotal / 10) as ChipValue) || 0;
+  // const chipFiftyCount = ((bankTotal / 50) as ChipValue) || 0;
+  // const chipHundredCount = ((bankTotal / 100) as ChipValue) || 0;
+  // const chips = [
+  //   chipOneCount,
+  //   chipFiveCount,
+  //   chipTenCount,
+  //   chipFiftyCount,
+  //   chipHundredCount,
+  // ];
 
   const drawPlayerCard = (card: string, handIndex = activeHandIndex) => {
     setPlayerCards((prev) => {
@@ -126,14 +147,19 @@ function App() {
       }
     }
 
-    setBetValues((prev) => [...prev, ...newChips]);
+    setBetValues((prev) => {
+      const newBet = [...prev, ...newChips];
+      return newBet.toSorted((a, b) => b - a);
+    });
     setBankTotal(remainingFunds);
   };
 
+  console.log(betValues);
   const handleRedoLastBet = (e: MouseEvent) => {
     e.preventDefault();
 
     setBetValues(previousBetValues);
+    // remove previous bet from current bankroll
   };
 
   const handleHitAction = (e: MouseEvent) => {
@@ -330,20 +356,26 @@ function App() {
                   <div className="flex flex-col items-center justify-center gap-5">
                     <div className="flex flex-row gap-4">
                       {chipDenominations.map((chip, index) => {
-                        return (
-                          <div key={index}>
-                            <button
-                              onClick={(e: MouseEvent) => {
-                                e.preventDefault();
-                                setBankTotal((prev) => prev - chip);
-                                setBetValues((prev) => [...prev, chip]);
-                              }}
-                              className="border border-black rounded-[50%] h-25 w-25 p-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
-                            >
-                              {chip}
-                            </button>
-                          </div>
-                        );
+                        if (chip < bankTotal) {
+                          return (
+                            <div key={index}>
+                              <button
+                                onClick={(e: MouseEvent) => {
+                                  e.preventDefault();
+                                  setBankTotal((prev) => prev - chip);
+                                  setBetValues((prev) => {
+                                    const newBet = [...prev, chip];
+                                    return newBet.toSorted((a, b) => b - a);
+                                  });
+                                }}
+                                className="border border-black rounded-[50%] h-25 w-25 p-2 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                              >
+                                {chip}
+                              </button>
+                            </div>
+                          );
+                        }
+                        return null;
                       })}
                     </div>
                     <div className="flex flex-row gap-4">
@@ -368,6 +400,8 @@ function App() {
                             e.preventDefault();
                             setBetValues([]);
                             setBankTotal(PLAYER_BANKROLL);
+                            //need to update with prevWonBankTotal AFTER win/lose logic
+                            //after this action, it should still show the 'replay last bet'
                           }}
                         >
                           Clear
@@ -382,6 +416,7 @@ function App() {
                       e.preventDefault();
                       setBetValues([]);
                       setBankTotal(PLAYER_BANKROLL);
+                      //need to update with prevWonBankTotal AFTER win/lose logic
                     }}
                   >
                     Reset the bet
