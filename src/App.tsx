@@ -29,8 +29,11 @@ function App() {
   const [previousBet, setPreviousBet] = useState<number[]>([]);
   // @todo implement prevWonBankTotal useRef
 
-  // @todo calculate credits - const hasCredits = bankTotal > 0 || betTotal >= 0;
-
+  // const hasCredits = bankTotal > 0 || currentBetTotal >= 0;
+  const currentBetTotal = playerCards?.[activeHandIndex]?.betValues.reduce(
+    (acc, cur) => acc + cur,
+    0,
+  );
   const totalHouseCount = getCardsCount(houseCards);
   const isHouseBusted = totalHouseCount > BUSTING_THRESHOLD;
   const gameSetupDone =
@@ -43,14 +46,20 @@ function App() {
       figureValues[playerCards?.[activeHandIndex]?.cards[0]?.[0] as Figures];
     const secondCardValue =
       figureValues[playerCards?.[activeHandIndex]?.cards[1]?.[0] as Figures];
+    const hasCredits = bankTotal > currentBetTotal;
 
     return (
       hasExactlyTwoCards &&
       !playerTurnEnded &&
       firstCardValue !== undefined &&
-      firstCardValue === secondCardValue
+      firstCardValue === secondCardValue &&
+      hasCredits
     );
   }, [playerTurnEnded, playerCards, activeHandIndex]);
+
+  const handleWin = (bet) => {
+    setBankTotal((prev) => (prev += bet));
+  };
 
   const drawPlayerCard = (card: string, handIndex = activeHandIndex) => {
     setPlayerCards((prev) => {
@@ -181,6 +190,7 @@ function App() {
       return [...prefixState, clonedTargetHand, newHand, ...suffixState];
     });
 
+    setBankTotal((prev) => prev - currentBetTotal);
     setActiveHandIndex((prev) => prev + 1);
 
     setDeck((prev) => prev.slice(1));
@@ -291,6 +301,11 @@ function App() {
                         isActive={index === activeHandIndex}
                         gameEnded={gameEnded}
                         showActiveIndicator={playerCards.length > 1}
+                        handleWin={handleWin}
+                        houseHasBlackjack={
+                          houseCards.length === 2 &&
+                          totalHouseCount === BUSTING_THRESHOLD
+                        }
                       />
                     </div>
                   );
@@ -408,17 +423,19 @@ function App() {
                     </div>
                   </div>
                 ) : (
-                  <button
-                    className="border border-black rounded-2xl p-2"
-                    onClick={(e: MouseEvent) => {
-                      e.preventDefault();
-                      setInitialBet([]);
-                      setBankTotal(PLAYER_BANKROLL);
-                      // @todo need to update with prevWonBankTotal AFTER win/lose logic
-                    }}
-                  >
-                    Reset the bet
-                  </button>
+                  <>
+                    <p className="mb-12">YOU LOST!</p>
+                    <button
+                      className="border border-black rounded-2xl p-2"
+                      onClick={(e: MouseEvent) => {
+                        e.preventDefault();
+                        setBankTotal(PLAYER_BANKROLL);
+                        // @todo need to update with prevWonBankTotal AFTER win/lose logic
+                      }}
+                    >
+                      Restart the game
+                    </button>
+                  </>
                 )}
               </div>
             )}
