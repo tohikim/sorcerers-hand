@@ -12,6 +12,9 @@ export interface PlayerHandProps {
   betValues: number[];
   handleWin: (bet: number) => void;
   houseHasBlackjack: boolean;
+  gameSetupDone: boolean;
+  playerTurnEnded: boolean;
+  latestChip: number;
 }
 
 export const PlayerHand = ({
@@ -23,6 +26,9 @@ export const PlayerHand = ({
   betValues,
   handleWin,
   houseHasBlackjack,
+  gameSetupDone,
+  playerTurnEnded,
+  latestChip,
 }: PlayerHandProps) => {
   const totalPlayerCount = getCardsCount(cards);
   const isPlayerBusted = totalPlayerCount > BUSTING_THRESHOLD;
@@ -83,9 +89,11 @@ export const PlayerHand = ({
   ]);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-5 m-0 h-full">
-      <div className="flex flex-row gap-8 w-full justify-center">
-        {showActiveIndicator && isActive && <p>{"=>"}</p>}
+    <div className="flex flex-col items-center justify-center ">
+      <div className="flex flex-row gap-8 w-full justify-center items-center min-h-30">
+        {showActiveIndicator && isActive && (
+          <p className="text-emerald-300">●</p>
+        )}
         <p>
           {cards.map((card, index) => {
             const isLast = index === cards.length - 1;
@@ -108,27 +116,38 @@ export const PlayerHand = ({
             </div>
             <button
               className={
-                betValues[betValues.length - 1] === 500
-                  ? "border-12 border-dashed bg-indigo-900 hover:bg-indigo-800 border-indigo-300 text-indigo-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
-                  : betValues[betValues.length - 1] === 100
-                  ? "border-12 border-dashed bg-zinc-900 hover:bg-zinc-800 border-zinc-400 text-zinc-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
-                  : betValues[betValues.length - 1] === 25
-                  ? "border-12 border-dashed bg-emerald-800 hover:bg-emerald-700 border-emerald-300 text-emerald-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
-                  : betValues[betValues.length - 1] === 5
-                  ? "border-12 border-dashed bg-rose-700 hover:bg-rose-600 border-rose-300 text-rose-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
-                  : "border-12 border-dashed bg-stone-100 hover:bg-stone-200 border-stone-400 text-stone-800 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                latestChip === 500
+                  ? "text-[4rem] border-12 border-dashed bg-indigo-900 hover:bg-indigo-800 border-indigo-300 text-indigo-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                  : latestChip === 100
+                  ? "text-[4rem] border-12 border-dashed bg-zinc-900 hover:bg-zinc-800 border-zinc-400 text-zinc-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                  : latestChip === 25
+                  ? "text-[4rem] border-12 border-dashed bg-emerald-800 hover:bg-emerald-700 border-emerald-300 text-emerald-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                  : latestChip === 5
+                  ? "text-[4rem] border-12 border-dashed bg-rose-700 hover:bg-rose-600 border-rose-300 text-rose-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                  : "text-[4rem] border-12 border-dashed bg-stone-100 hover:bg-stone-200 border-stone-400 text-stone-800 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
               }
             >
-              {betValues[betValues.length - 1]}
+              {latestChip}
             </button>
           </>
         )}
+
         {!!handState && (
-          <p className="m-0 p-0 italic">
-            You {handState.toLowerCase()}{" "}
-            {["Won", "Lost"].includes(handState) &&
-              `$${(wonBet || 0) + betTotal}`}
-          </p>
+          <div className="flex flex-col items-center justify-center gap-2">
+            <p className="m-0 p-0 italic">You {handState.toLowerCase()}!</p>
+            <p
+              className={
+                handState === "Won"
+                  ? "m-0 p-0 font-sans font-bold text-[2rem] text-emerald-300"
+                  : handState === "Lost" &&
+                    "m-0 p-0 font-sans font-bold text-[2rem] text-red-500"
+              }
+            >
+              {handState === "Won"
+                ? `+$${(wonBet || 0) + betTotal}`
+                : handState === "Lost" && `-$${(wonBet || 0) + betTotal}`}
+            </p>
+          </div>
         )}
       </div>
     </div>
