@@ -275,7 +275,7 @@ function App() {
                 setGameStarted(true);
                 setBankTotal(PLAYER_BANKROLL);
               }}
-              className="min-w-50 rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
+              className="min-w-45 rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
             >
               Start the game
             </button>
@@ -284,27 +284,31 @@ function App() {
           <div className="flex flex-col items-center justify-center gap-10 p-10 h-screen">
             {dealMade && (
               <div className="flex flex-col h-screen justify-between w-full">
-                <div className="flex flex-col items-center justify-center gap-5 h-40">
+                <div className="flex flex-col items-center justify-start gap-5 min-h-110 mt-10">
                   <p className="text-amber-400/80 text-[2rem] font-sans tracking-[0.2em] uppercase font-bold mb-1">
                     House
                   </p>
-                  <p className="min-h-30">
-                    {houseCards.map((card, index) => {
-                      const isLast = index === houseCards.length - 1;
-                      if (!isLast) {
-                        return card + ", ";
-                      }
-                      return card;
+                  <div className="flex flex-row gap-4 justify-center items-center">
+                    {houseCards.map((card) => {
+                      return (
+                        <div className={`w-40 h-auto`} key={card}>
+                          <img
+                            src={`/assets/SVG-cards-1.3/${card}.svg`}
+                            alt={card}
+                            className="w-full h-auto"
+                          />
+                        </div>
+                      );
                     })}
-                    {!!totalHouseCount && ` (${totalHouseCount})`}
-                  </p>
-                  {isHouseBusted && <p>House busted</p>}
+                    {/* {!!totalHouseCount && ` (${totalHouseCount})`} */}
+                  </div>
+                  {isHouseBusted && <p className="italic">House busted</p>}
                 </div>
-                <div className="flex flex-col items-center justify-baseline gap-5 h-120">
+                <div className="flex flex-col items-center justify-baseline gap-5 min-h-100">
                   <p className="text-amber-400/80 text-[2rem] font-sans tracking-[0.2em] uppercase font-bold mt-6 mb-1">
                     Player
                   </p>
-                  <div className="flex flex-row gap-44">
+                  <div className="flex flex-row gap-24">
                     {playerCards.map((hand, index) => {
                       return (
                         <div
@@ -324,8 +328,6 @@ function App() {
                               houseCards.length === 2 &&
                               totalHouseCount === BUSTING_THRESHOLD
                             }
-                            playerTurnEnded={playerTurnEnded}
-                            gameSetupDone={gameSetupDone}
                             latestChip={latestChip}
                           />
                         </div>
@@ -333,13 +335,13 @@ function App() {
                     })}
                   </div>
                 </div>
-                <div className="flex flex-col items-center justify-start gap-5 m-0 p-0 h-70 mt-30">
+                <div className="flex flex-col items-center justify-start gap-5 p-0 min-h-50 mt-30">
                   <>
                     <div className="inline-flex items-center gap-5 bg-zinc-950/80 border border-[#d4af37]/40 px-6 py-4 rounded-4xl shadow-xl backdrop-blur-xl my-4">
-                      <span className="text-[2rem] font-sans tracking-widest uppercase font-bold text-zinc-400">
+                      <span className="text-[24px] font-sans tracking-widest uppercase font-bold text-zinc-400">
                         Bank Total
                       </span>
-                      <span className="text-[2.5rem]  text-zinc-200 drop-shadow-xl">
+                      <span className="text-[2rem]  text-zinc-200 drop-shadow-xl">
                         ${bankTotal}
                       </span>
                     </div>
@@ -348,14 +350,14 @@ function App() {
                     <div className="flex flex-row gap-10 pt-1 m-0">
                       <button
                         onClick={handleHitAction}
-                        className="min-w-50 rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
+                        className="min-w-45 rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
                       >
                         Hit
                       </button>
                       {canSplit && (
                         <button
                           onClick={handleSplitAction}
-                          className="min-w-50 rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
+                          className="min-w-45 rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
                         >
                           Split
                         </button>
@@ -365,37 +367,39 @@ function App() {
                           e.preventDefault();
                           handleHandEnded();
                         }}
-                        className="min-w-50 rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
+                        className="min-w-45 rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
                       >
                         Stand
                       </button>
                     </div>
                   )}
-                  {gameEnded && bankTotal > 0 && (
+                  {gameEnded && bankTotal > 0 && bankTotal != 0.5 && (
                     <button
-                      className="rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-amber-700 to-amber-950 hover:from-amber-600 hover:to-amber-800 border border-amber-600 text-amber-100 font-semibold shadow-md "
+                      className="rounded-[3rem] p-4 pl-8 pr-8 m-0 bg-linear-to-b from-amber-700 to-amber-950 hover:from-amber-600 hover:to-amber-800 border border-amber-600 text-amber-100 font-semibold shadow-md "
                       onClick={handleReplay}
                     >
                       Play again
                     </button>
                   )}
+                  {gameEnded && bankTotal <= 0.5 && (
+                    <div className="p-0 m-0 flex flex-col justify-center items-center gap-5">
+                      <p className="italic">
+                        GAME OVER! You lost all the money.
+                      </p>
+                      <button
+                        className="rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-amber-700 to-amber-950 hover:from-amber-600 hover:to-amber-800 border border-amber-600 text-amber-100 font-semibold shadow-md "
+                        onClick={(e: MouseEvent) => {
+                          e.preventDefault();
+                          setBankTotal(PLAYER_BANKROLL);
+                          setGameStarted(false);
+                          handleReplay(e);
+                        }}
+                      >
+                        Restart the game
+                      </button>
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
-            {gameEnded && bankTotal <= 0 && (
-              <div className="p-0 m-0 flex flex-col justify-center items-center gap-5">
-                <p className="italic">GAME OVER! You lost all the money.</p>
-                <button
-                  className="rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-amber-700 to-amber-950 hover:from-amber-600 hover:to-amber-800 border border-amber-600 text-amber-100 font-semibold shadow-md "
-                  onClick={(e: MouseEvent) => {
-                    e.preventDefault();
-                    setBankTotal(PLAYER_BANKROLL);
-                    setGameStarted(false);
-                    handleReplay(e);
-                  }}
-                >
-                  Restart the game
-                </button>
               </div>
             )}
             <div className="flex flex-col justify-center items-center gap-10">
@@ -425,14 +429,14 @@ function App() {
                         <button
                           className={
                             latestChip === 500
-                              ? "text-[4rem] border-12 border-dashed bg-indigo-900 hover:bg-indigo-800 border-indigo-300 text-indigo-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                              ? "text-[4rem] border-12 border-dashed bg-indigo-900 hover:bg-indigo-800 border-indigo-300 text-indigo-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                               : latestChip === 100
-                              ? "text-[4rem] border-12 border-dashed bg-zinc-900 hover:bg-zinc-800 border-zinc-400 text-zinc-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                              ? "text-[4rem] border-12 border-dashed bg-zinc-900 hover:bg-zinc-800 border-zinc-400 text-zinc-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                               : latestChip === 25
-                              ? "text-[4rem] border-12 border-dashed bg-emerald-800 hover:bg-emerald-700 border-emerald-300 text-emerald-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                              ? "text-[4rem] border-12 border-dashed bg-emerald-800 hover:bg-emerald-700 border-emerald-300 text-emerald-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                               : latestChip === 5
-                              ? "text-[4rem] border-12 border-dashed bg-rose-700 hover:bg-rose-600 border-rose-300 text-rose-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
-                              : "text-[4rem] border-12 border-dashed bg-stone-100 hover:bg-stone-200 border-stone-400 text-stone-800 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                              ? "text-[4rem] border-12 border-dashed bg-rose-700 hover:bg-rose-600 border-rose-300 text-rose-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                              : "text-[4rem] border-12 border-dashed bg-stone-100 hover:bg-stone-200 border-stone-400 text-stone-800 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                           }
                           onClick={undoLatestBetChip}
                         >
@@ -467,14 +471,14 @@ function App() {
                                   }}
                                   className={
                                     chip === 500
-                                      ? "text-[4rem] border-12 border-dashed bg-indigo-900 hover:bg-indigo-800 border-indigo-300 text-indigo-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                      ? "text-[4rem] border-12 border-dashed bg-indigo-900 hover:bg-indigo-800 border-indigo-300 text-indigo-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                                       : chip === 100
-                                      ? "text-[4rem] border-12 border-dashed bg-zinc-900 hover:bg-zinc-800 border-zinc-400 text-zinc-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                      ? "text-[4rem] border-12 border-dashed bg-zinc-900 hover:bg-zinc-800 border-zinc-400 text-zinc-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                                       : chip === 25
-                                      ? "text-[4rem] border-12 border-dashed bg-emerald-800 hover:bg-emerald-700 border-emerald-300 text-emerald-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                      ? "text-[4rem] border-12 border-dashed bg-emerald-800 hover:bg-emerald-700 border-emerald-300 text-emerald-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                                       : chip === 5
-                                      ? "text-[4rem] border-12 border-dashed bg-rose-700 hover:bg-rose-600 border-rose-300 text-rose-100 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
-                                      : "text-[4rem] border-12 border-dashed bg-stone-100 hover:bg-stone-200 border-stone-400 text-stone-800 font-bold rounded-[50%] h-50 w-50 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                      ? "text-[4rem] border-12 border-dashed bg-rose-700 hover:bg-rose-600 border-rose-300 text-rose-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                      : "text-[4rem] border-12 border-dashed bg-stone-100 hover:bg-stone-200 border-stone-400 text-stone-800 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                                   }
                                 >
                                   {chip}
