@@ -14,6 +14,7 @@ import type { Figures } from "./types/figures";
 import { PlayerHand } from "./components/PlayerHand";
 import { chipDenominations, PLAYER_BANKROLL } from "./constants/chips";
 import type { PlayerHandStructure } from "./types/player-hand";
+import { useSFX } from "./hooks/useSFX.ts";
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -36,6 +37,8 @@ function App() {
   const hasCredits = bankTotal >= currentBetTotal;
   const totalHouseCount = getCardsCount(houseCards);
   const isHouseBusted = totalHouseCount > BUSTING_THRESHOLD;
+  const playClickSound = useSFX("../public/click2.mov", 0.5);
+  const playCashSound = useSFX("../public/cash.mov", 0.5);
   const gameSetupDone =
     playerCards[activeHandIndex >= 0 ? activeHandIndex : 0]?.cards.length >= 2;
 
@@ -76,6 +79,7 @@ function App() {
 
   const handleReplay = async (e: MouseEvent) => {
     e.preventDefault();
+    playClickSound();
 
     setActiveHandIndex(0);
     setPlayerTurnEnded(false);
@@ -88,6 +92,7 @@ function App() {
 
   const undoLatestBetChip = (e: MouseEvent) => {
     e.preventDefault();
+    playCashSound();
     if (dealMade) return;
 
     const poppedValue = initialBet.pop();
@@ -96,6 +101,7 @@ function App() {
 
   const handleDeal = async (e: MouseEvent) => {
     e.preventDefault();
+    playClickSound();
     setDealMade(true);
 
     setPreviousBet(cloneDeep(initialBet));
@@ -131,6 +137,7 @@ function App() {
 
   const handleAllIn = (e: MouseEvent) => {
     e.preventDefault();
+    playClickSound();
 
     let remainingFunds = bankTotal;
     const newChips: number[] = [];
@@ -155,13 +162,14 @@ function App() {
 
   const handleRedoLastBet = (e: MouseEvent) => {
     e.preventDefault();
+    playClickSound();
 
     setInitialBet(previousBet);
-    // @todo  remove previous bet from current bankroll
   };
 
   const handleHitAction = (e: MouseEvent) => {
     e.preventDefault();
+    playClickSound();
 
     drawPlayerCard(deck[0]);
 
@@ -170,6 +178,7 @@ function App() {
 
   const handleSplitAction = (e: MouseEvent) => {
     e.preventDefault();
+    playClickSound();
 
     const topCard = deck[0];
 
@@ -258,20 +267,45 @@ function App() {
 
   return (
     <div
-      className="relative min-h-screen h-full w-full overflow-y-auto flex items-center justify-center p-4 md:p-8 select-none bg-[#0a2012]"
+      className="relative min-h-screen h-full w-full overflow-y-auto flex items-center justify-center p-4 md:p-8 select-none bg-stone-900"
       style={{
-        background:
-          "radial-gradient(circle at center, #1b5e20 0%, #0c3816 40%, #051a0b 85%, #020a04 100%)",
+        backgroundImage: "url('../public/Harrypotter_bg.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="w-full h-screen absolute inset-0 opacity-5 mix-blend-overlay pointer-events-none bg-[radial-gradient(#fff_1px,transparent_1px)] bg-size-[16px_16px]" />
-      <div className="flex flex-col items-center justify-center text-white text-[3rem] gap-10 p-10 w-full h-screen">
+      <div className="flex flex-col items-center justify-center text-white text-[3rem] gap-10 p-10 w-full h-screen relative z-10">
         {!gameStarted ? (
           <>
-            <p>BLACK JACK ORIGINAL</p>
+            <div
+              className="relative flex flex-col items-center justify-center min-w-50 h-fit px-8 rounded-lg select-none border border-[#52584d]/40 shadow-[0_4px_12px_rgba(0,0,0,0.5),inset_0_2px_3px_rgba(255,255,255,0.15)]"
+              style={{
+                background: `
+          radial-gradient(circle at 30% 20%, rgba(255,255,255,0.05) 0%, transparent 50%),
+          linear-gradient(135deg, #4d554a 0%, #3a4136 30%, #2e342a 70%, #252b22 100%)
+        `,
+              }}
+            >
+              <div
+                className="absolute inset-0 rounded-lg opacity-[0.12] mix-blend-overlay pointer-events-none"
+                style={{
+                  backgroundImage: `radial-gradient(#000_1px, transparent 0), radial-gradient(#fff_1px, transparent 0)`,
+                  backgroundSize: "4px 4px",
+                  backgroundPosition: "0 0, 2px 2px",
+                }}
+              />
+              <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-linear-to-br from-[#7d8678] via-[#454d41] to-[#1e231c] border border-[#1a1e17]/60 shadow-[0_1px_2px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.3)]" />
+              <div className="absolute right-2.5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-linear-to-br from-[#7d8678] via-[#454d41] to-[#1e231c] border border-[#1a1e17]/60 shadow-[0_1px_2px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.3)]" />
+              <div className="text-[6rem] relative z-10 flex flex-col items-center justify-center drop-shadow-[0_2px_3px_rgba(0,0,0,0.8)]">
+                SORCERER'S HAND
+              </div>
+            </div>
+            {/* <p className="text-[5rem]"></p> */}
             <button
               onClick={(e) => {
                 e.preventDefault();
+                playClickSound();
                 setGameStarted(true);
                 setBankTotal(PLAYER_BANKROLL);
               }}
@@ -304,7 +338,7 @@ function App() {
                   </div>
                   {isHouseBusted && <p className="italic">House busted</p>}
                 </div>
-                <div className="flex flex-col items-center justify-baseline gap-5 min-h-100">
+                <div className="flex flex-col items-center justify-baseline gap-5 min-h-120">
                   <p className="text-amber-400/80 text-[2rem] font-sans tracking-[0.2em] uppercase font-bold mt-6 mb-1">
                     Player
                   </p>
@@ -365,6 +399,7 @@ function App() {
                       <button
                         onClick={(e) => {
                           e.preventDefault();
+                          playClickSound();
                           handleHandEnded();
                         }}
                         className="min-w-45 rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
@@ -390,6 +425,7 @@ function App() {
                         className="rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-amber-700 to-amber-950 hover:from-amber-600 hover:to-amber-800 border border-amber-600 text-amber-100 font-semibold shadow-md "
                         onClick={(e: MouseEvent) => {
                           e.preventDefault();
+                          playClickSound();
                           setBankTotal(PLAYER_BANKROLL);
                           setGameStarted(false);
                           handleReplay(e);
@@ -463,6 +499,7 @@ function App() {
                                 <button
                                   onClick={(e: MouseEvent) => {
                                     e.preventDefault();
+                                    playCashSound();
                                     setBankTotal((prev) => prev - chip);
                                     setInitialBet((prev) => {
                                       const newBet = [...prev, chip];
@@ -513,6 +550,7 @@ function App() {
                             className="rounded-[3rem] p-4 pl-8 pr-8 bg-linear-to-b from-zinc-700 to-zinc-950 hover:from-zinc-600 hover:to-zinc-800 border border-zinc-500 text-zinc-100 font-bold tracking-wider shadow-[0_4px_15px_rgba(0,0,0,0.4)] active:scale-95 transition-all cursor-pointer"
                             onClick={(e: MouseEvent) => {
                               e.preventDefault();
+                              playClickSound();
                               setInitialBet([]);
                               setBankTotal(PLAYER_BANKROLL);
                             }}

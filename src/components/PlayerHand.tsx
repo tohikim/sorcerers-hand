@@ -18,9 +18,7 @@ export interface PlayerHandProps {
 export const PlayerHand = ({
   cards,
   totalHouseCount,
-  isActive,
   gameEnded,
-  showActiveIndicator,
   betValues,
   handleWin,
   houseHasBlackjack,
