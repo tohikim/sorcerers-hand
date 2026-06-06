@@ -85,37 +85,61 @@ export const PlayerHand = ({
   return (
     <div className="">
       <div className="flex flex-col items-center justify-center gap-5">
-        <div className="flex flex-row gap-5">
-          {cards.map((card) => {
-            // const topSpacing = 32;
-            // const leftSpacing = 32;
-            return (
-              <div
-                className={`w-40 h-auto`}
-                // style={{
-                //   top: `${topSpacing * index}px`,
-                //   left: `${leftSpacing * index}px`,
-                // }}
-                key={card}
-              >
-                <img
-                  src={`/assets/SVG-cards-1.3/${card}.svg`}
-                  alt={card}
-                  className="w-full h-auto"
-                />
-              </div>
-            );
-          })}
+        {!!handState && (
+          <div className="flex flex-row items-center justify-center">
+            <p className="m-0 p-0 italic text-[2.5rem]">
+              You {handState.toLowerCase()}!
+            </p>
+            <p
+              className={
+                handState === "Won"
+                  ? "m-0 p-0 pl-5 font-sans text-[2rem] text-emerald-300"
+                  : handState === "Lost" &&
+                    "m-0 p-0 pl-5 font-sans text-[2rem] text-red-500"
+              }
+            >
+              {handState === "Won"
+                ? `+$${(wonBet || 0) + betTotal}`
+                : handState === "Lost" && `-$${(wonBet || 0) + betTotal}`}
+            </p>
+          </div>
+        )}
+        <div className="min-h-70">
+          <div className="w-24 h-36 sm:w-32 sm:h-48 md:w-36 md:h-52 lg:w-40 lg:h-56 relative select-none">
+            {cards.map((card, index) => {
+              const topOffset = 24;
+              const leftOffset = 16;
+              return (
+                <div
+                  className="w-full h-auto absolute transition-all duration-300"
+                  style={{
+                    top: `${topOffset * index}px`,
+                    left: `${leftOffset * index}px`,
+                    zIndex: index,
+                  }}
+                  key={card}
+                >
+                  <img
+                    src={`/assets/SVG-cards-1.3/${card}.svg`}
+                    alt={card}
+                    className="w-full h-auto drop-shadow-md"
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
-        {/* {!!totalPlayerCount && ` (${totalPlayerCount})`} */}
-        <div className="flex flex-col gap-5 justify-center items-center">
+        <div className="flex flex-col gap-5 justify-center items-center pt-10">
           {!!betValues.length && (
             <>
-              <div className="inline-flex items-center gap-5 bg-zinc-950/80 border border-[#d4af37]/40 px-6 py-4 rounded-4xl shadow-xl backdrop-blur-xl my-4">
-                <span className="text-[24px] font-sans tracking-widest uppercase font-bold text-zinc-400">
-                  Bet
+              <div className="min-w-30 inline-flex items-center justify-between bg-zinc-950/80 px-10 gap-10 border border-[#d4af37]/40 rounded-4xl shadow-xl backdrop-blur-xl">
+                <span className="text-[28px] font-sans tracking-widest text-zinc-400  text-start">
+                  {totalPlayerCount}
                 </span>
-                <span className="text-[2rem] text-yellow-400">${betTotal}</span>
+                <div className="h-6 border border-[#d4af37]/40"></div>
+                <span className="text-[2rem] text-yellow-400 text-end">
+                  ${betTotal}
+                </span>
               </div>
               <button
                 className={
@@ -133,24 +157,6 @@ export const PlayerHand = ({
                 {latestChip}
               </button>
             </>
-          )}
-
-          {!!handState && (
-            <div className="flex flex-col items-center justify-center gap-2">
-              <p className="m-0 p-0 italic">You {handState.toLowerCase()}!</p>
-              <p
-                className={
-                  handState === "Won"
-                    ? "m-0 p-0 font-sans font-bold text-[2rem] text-emerald-300"
-                    : handState === "Lost" &&
-                      "m-0 p-0 font-sans font-bold text-[2rem] text-red-500"
-                }
-              >
-                {handState === "Won"
-                  ? `+$${(wonBet || 0) + betTotal}`
-                  : handState === "Lost" && `-$${(wonBet || 0) + betTotal}`}
-              </p>
-            </div>
           )}
         </div>
       </div>

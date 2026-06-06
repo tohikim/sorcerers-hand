@@ -7,7 +7,7 @@ import { BackgroundMusic } from "./components/BackgroundMusic.tsx";
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const OtherComponent = React.lazy(() =>
-  Promise.all([import("./App.tsx"), delay(5500)]).then(
+  Promise.all([import("./App.tsx"), delay(1500)]).then(
     ([moduleExports]) => moduleExports,
   ),
 );
@@ -34,7 +34,7 @@ createRoot(document.getElementById("root")!).render(
               loop
             />
           </div>
-          <p className="text-white text-[4rem] md:text-[3rem] tracking-wider animate-pulse mt-8 text-center relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+          <p className="text-white text-[2rem] md:text-[3rem] tracking-wider animate-pulse mt-8 text-center relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
             {" "}
             Unlocking the game... Tap to start
           </p>
