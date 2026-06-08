@@ -109,6 +109,8 @@ function App() {
     if (dealMade) return;
 
     const poppedValue: number = initialBet.pop();
+    if (poppedValue === undefined) return;
+
     setBankTotal((prev) => prev + poppedValue);
   };
 
@@ -209,6 +211,7 @@ function App() {
       const clonedTargetHand = cloneDeep(prev[activeHandIndex]);
 
       const split: string = clonedTargetHand.cards.pop();
+      if (!split) return prev;
 
       const newHand: PlayerHandStructure = {
         cards: [split, topCard],

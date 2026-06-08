@@ -94,10 +94,9 @@ export const PlayerHand = ({
               className={
                 handState === "Won"
                   ? "m-0 p-0 pl-5 font-sans text-[2rem] text-emerald-300"
-                  : handState === "Lost"
+                  : handState === "Lost" || handState === "Busted"
                   ? "m-0 p-0 pl-5 font-sans text-[2rem] text-red-500"
-                  : handState === "Busted" &&
-                    "m-0 p-0 pl-5 font-sans text-[2rem] text-red-500"
+                  : undefined
               }
             >
               {handState === "Won"
