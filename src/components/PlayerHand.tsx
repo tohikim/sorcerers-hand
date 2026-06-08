@@ -84,7 +84,21 @@ export const PlayerHand = ({
 
   return (
     <div>
-      <div className="flex flex-col items-center justify-center gap-">
+      <div className="flex flex-col items-center justify-start gap-5">
+        <div className="min-w-30 inline-flex items-center justify-start bg-zinc-950/80 px-5 border border-[#d4af37]/40 rounded-4xl shadow-xl backdrop-blur-xl">
+          {isActive && (
+            <span className="text-emerald-300 text-[1rem] p-0 pr-2 self-center">
+              ●
+            </span>
+          )}
+          <span className="text-[14px] font-sans tracking-widest text-zinc-400  text-start pr-5">
+            {totalPlayerCount}
+          </span>
+          <div className="h-6 border-[0.7px] border-[#d4af37]/40 mr-5"></div>
+          <span className="text-[1rem] text-yellow-400 text-end">
+            ${betTotal}
+          </span>
+        </div>
         <div className="min-h-35">
           <div className="w-10 h-17 sm:w-14 sm:h-21 md:w-16 md:h-23 lg:w-18 lg:h-25 relative select-none">
             {cards.map((card, index) => {
@@ -110,23 +124,9 @@ export const PlayerHand = ({
             })}
           </div>
         </div>
-        <div className="flex flex-col gap-2 justify-center items-center pt-5">
+        <div className="flex flex-col gap-4 justify-center items-center pt-0">
           {!!betValues.length && (
             <>
-              <div className="min-w-30 inline-flex items-center justify-between bg-zinc-950/80 px-5 border border-[#d4af37]/40 rounded-4xl shadow-xl backdrop-blur-xl">
-                {isActive && (
-                  <span className="text-emerald-300 text-[1rem] p-0 pr-2 self-center">
-                    ●
-                  </span>
-                )}
-                <span className="text-[14px] font-sans tracking-widest text-zinc-400  text-start pr-5">
-                  {totalPlayerCount}
-                </span>
-                <div className="h-6 border-[0.7px] border-[#d4af37]/40 mr-5"></div>
-                <span className="text-[1rem] text-yellow-400 text-end">
-                  ${betTotal}
-                </span>
-              </div>
               <button
                 className={
                   latestChip === 500

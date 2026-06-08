@@ -345,11 +345,18 @@ function App() {
             </button>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center p-5 gap-10 h-screen w-full">
+          <div className="flex flex-col items-center justify-center p-5 h-screen w-full">
             {dealMade && (
-              <div className="flex flex-col h-screen justify-evenly w-full gap-0">
+              <div className="flex flex-col h-screen justify-around w-full gap-5">
                 <div className="flex flex-col items-center justify-start gap-5 min-h-48 max-h-48">
                   <div className="flex flex-col items-center justify-center gap-5">
+                    {!!totalHouseCount && (
+                      <div className="min-w-20 inline-flex items-center justify-center bg-zinc-950/80 px-5 border border-[#d4af37]/40 rounded-4xl shadow-xl backdrop-blur-xl">
+                        <p className="text-[14px] font-sans text-zinc-400 ">
+                          {totalHouseCount}
+                        </p>
+                      </div>
+                    )}
                     <div className="min-h-30">
                       <div className="w-10 h-17 sm:w-14 sm:h-21 md:w-16 md:h-23 lg:w-18 lg:h-25 relative select-none">
                         {houseCards.map((card, index) => {
@@ -375,14 +382,7 @@ function App() {
                         })}
                       </div>
                     </div>
-                    <div className="pt-5 flex flex-col items-center justify-center">
-                      {!!totalHouseCount && (
-                        <div className="min-w-20 inline-flex items-center justify-center bg-zinc-950/80 px-5 border border-[#d4af37]/40 rounded-4xl shadow-xl backdrop-blur-xl">
-                          <p className="text-[14px] font-sans text-zinc-400 ">
-                            {totalHouseCount}
-                          </p>
-                        </div>
-                      )}
+                    <div className="pt-4 flex flex-col items-center justify-center">
                       {isHouseBusted && (
                         <p className=" text-[1rem] p-0 m-0 text-center">
                           House busted
@@ -392,7 +392,7 @@ function App() {
                   </div>
                 </div>
                 <div className="flex flex-col items-center justify-start gap-5 min-h-80 max-h-80 mt-5">
-                  <div className="flex flex-row gap-24">
+                  <div className="flex flex-row gap-24 items-start">
                     {playerCards.map((hand, index) => {
                       return (
                         <div
@@ -639,7 +639,7 @@ function App() {
                         })}
                       </div>
                       <div className="flex flex-row gap-4 m-0">
-                        {(bankTotal > 0 || bankTotal !== 0.5) && (
+                        {bankTotal > 0 && bankTotal !== 0.5 && (
                           <div className="flex flex-row gap-4">
                             <button
                               className="text-[1.4rem] border border-red-500 rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-red-700 to-red-950 hover:from-red-600 hover:to-red-800 text-white font-bold tracking-widest shadow-[0_0_15px_rgba(220,38,38,0.3)"
