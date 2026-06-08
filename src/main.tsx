@@ -30,7 +30,7 @@ createRoot(document.getElementById("root")!).render(
             {" "}
             <DotLottieReact src="/loadingAnimation.lottie" autoplay loop />
           </div>
-          <p className="text-white text-[2rem] md:text-[3rem] tracking-wider animate-pulse mt-8 text-center relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+          <p className="text-white text-[1.4rem] md:text-[1.4rem] tracking-wider animate-pulse mt-8 text-center relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
             {" "}
             Unlocking the game... Tap to start
           </p>

@@ -83,34 +83,13 @@ export const PlayerHand = ({
   ]);
 
   return (
-    <div className="">
-      <div className="flex flex-col items-center justify-center gap-5">
-        {!!handState && (
-          <div className="flex flex-row items-center justify-center">
-            <p className="m-0 p-0 italic text-[2.5rem]">
-              You {handState.toLowerCase()}!
-            </p>
-            <p
-              className={
-                handState === "Won"
-                  ? "m-0 p-0 pl-5 font-sans text-[2rem] text-emerald-300"
-                  : handState === "Lost" || handState === "Busted"
-                  ? "m-0 p-0 pl-5 font-sans text-[2rem] text-red-500"
-                  : undefined
-              }
-            >
-              {handState === "Won"
-                ? `+$${(wonBet || 0) + betTotal}`
-                : (handState === "Lost" || handState === "Busted") &&
-                  `-$${(wonBet || 0) + betTotal}`}
-            </p>
-          </div>
-        )}
-        <div className="min-h-70">
-          <div className="w-24 h-36 sm:w-32 sm:h-48 md:w-36 md:h-52 lg:w-40 lg:h-56 relative select-none">
+    <div>
+      <div className="flex flex-col items-center justify-center gap-">
+        <div className="min-h-35">
+          <div className="w-10 h-17 sm:w-14 sm:h-21 md:w-16 md:h-23 lg:w-18 lg:h-25 relative select-none">
             {cards.map((card, index) => {
-              const topOffset = 24;
-              const leftOffset = 16;
+              const topOffset = 13;
+              const leftOffset = 15;
               return (
                 <div
                   className="w-full h-auto absolute transition-all duration-300"
@@ -131,39 +110,60 @@ export const PlayerHand = ({
             })}
           </div>
         </div>
-        <div className="flex flex-col gap-5 justify-center items-center pt-10">
+        <div className="flex flex-col gap-2 justify-center items-center pt-5">
           {!!betValues.length && (
             <>
-              <div className="min-w-30 inline-flex items-center justify-between bg-zinc-950/80 px-10 border border-[#d4af37]/40 rounded-4xl shadow-xl backdrop-blur-xl">
+              <div className="min-w-30 inline-flex items-center justify-between bg-zinc-950/80 px-5 border border-[#d4af37]/40 rounded-4xl shadow-xl backdrop-blur-xl">
                 {isActive && (
-                  <span className="text-emerald-300 text-[2rem] p-0 pr-5 self-center">
+                  <span className="text-emerald-300 text-[1rem] p-0 pr-2 self-center">
                     ●
                   </span>
                 )}
-                <span className="text-[28px] font-sans tracking-widest text-zinc-400  text-start pr-10">
+                <span className="text-[14px] font-sans tracking-widest text-zinc-400  text-start pr-5">
                   {totalPlayerCount}
                 </span>
-                <div className="h-6 border border-[#d4af37]/40 mr-10"></div>
-                <span className="text-[2rem] text-yellow-400 text-end">
+                <div className="h-6 border-[0.7px] border-[#d4af37]/40 mr-5"></div>
+                <span className="text-[1rem] text-yellow-400 text-end">
                   ${betTotal}
                 </span>
               </div>
               <button
                 className={
                   latestChip === 500
-                    ? "text-[4rem] border-12 border-dashed bg-indigo-900 hover:bg-indigo-800 border-indigo-300 text-indigo-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                    ? "text-[1.4rem] border-3 border-dashed bg-indigo-900 hover:bg-indigo-800 border-indigo-300 text-indigo-100 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                     : latestChip === 100
-                    ? "text-[4rem] border-12 border-dashed bg-zinc-900 hover:bg-zinc-800 border-zinc-400 text-zinc-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                    ? "text-[1.4rem] border-3 border-dashed bg-zinc-900 hover:bg-zinc-800 border-zinc-400 text-zinc-100 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                     : latestChip === 25
-                    ? "text-[4rem] border-12 border-dashed bg-emerald-800 hover:bg-emerald-700 border-emerald-300 text-emerald-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                    ? "text-[1.4rem] border-3 border-dashed bg-emerald-800 hover:bg-emerald-700 border-emerald-300 text-emerald-100 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                     : latestChip === 5
-                    ? "text-[4rem] border-12 border-dashed bg-rose-700 hover:bg-rose-600 border-rose-300 text-rose-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
-                    : "text-[4rem] border-12 border-dashed bg-stone-100 hover:bg-stone-200 border-stone-400 text-stone-800 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                    ? "text-[1.4rem] border-3 border-dashed bg-rose-700 hover:bg-rose-600 border-rose-300 text-rose-100 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                    : "text-[1.4rem] border-3 border-dashed bg-stone-100 hover:bg-stone-200 border-stone-400 text-stone-800 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                 }
               >
                 {latestChip}
               </button>
             </>
+          )}
+          {!!handState && (
+            <div className="flex flex-row items-center justify-center">
+              <p className="m-0 p-0 text-[1rem]">
+                You {handState.toLowerCase()}!
+              </p>
+              <p
+                className={
+                  handState === "Won"
+                    ? "m-0 p-0 pl-2 font-sans text-[1rem] text-emerald-300"
+                    : handState === "Lost" || handState === "Busted"
+                    ? "m-0 p-0 pl-2 font-sans text-[1rem] text-red-500"
+                    : undefined
+                }
+              >
+                {handState === "Won"
+                  ? `+$${(wonBet || 0) + betTotal}`
+                  : (handState === "Lost" || handState === "Busted") &&
+                    `-$${(wonBet || 0) + betTotal}`}
+              </p>
+            </div>
           )}
         </div>
       </div>

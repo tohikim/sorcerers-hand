@@ -303,11 +303,11 @@ function App() {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="flex flex-col items-center justify-center text-white text-[3rem] gap-10 p-10 w-full h-screen relative z-10">
+      <div className="flex flex-col items-center justify-center text-white text-[1.4rem] gap-5 p-10 w-full h-screen relative z-10">
         {!gameStarted ? (
           <>
             <div
-              className="relative flex flex-col items-center justify-center min-w-50 h-fit px-8 rounded-lg select-none border border-[#52584d]/40 shadow-[0_4px_12px_rgba(0,0,0,0.5),inset_0_2px_3px_rgba(255,255,255,0.15)]"
+              className="relative flex flex-col items-center justify-center min-w-25 h-fit px-8 rounded-lg select-none border border-[#52584d]/40 shadow-[0_4px_12px_rgba(0,0,0,0.5),inset_0_2px_3px_rgba(255,255,255,0.15)]"
               style={{
                 background: `
           radial-gradient(circle at 30% 20%, rgba(255,255,255,0.05) 0%, transparent 50%),
@@ -325,7 +325,7 @@ function App() {
               />
               <div className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-linear-to-br from-[#7d8678] via-[#454d41] to-[#1e231c] border border-[#1a1e17]/60 shadow-[0_1px_2px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.3)]" />
               <div className="absolute right-2.5 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-linear-to-br from-[#7d8678] via-[#454d41] to-[#1e231c] border border-[#1a1e17]/60 shadow-[0_1px_2px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.3)]" />
-              <div className="text-[6rem] relative z-10 flex flex-col items-center justify-center drop-shadow-[0_2px_3px_rgba(0,0,0,0.8)]">
+              <div className="text-[2.5rem] relative z-10 flex flex-col items-center justify-center drop-shadow-[0_2px_3px_rgba(0,0,0,0.8)]">
                 SORCERER'S HAND
               </div>
             </div>
@@ -339,55 +339,59 @@ function App() {
                 setInitialBet([]);
                 setPreviousBet([]);
               }}
-              className="text-[2.5rem] min-w-45 rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
+              className="text-[1.4rem] min-w-20 rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
             >
               Start the game
             </button>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center gap-10 p-10 h-screen w-full">
+          <div className="flex flex-col items-center justify-center p-5 h-screen w-full">
             {dealMade && (
-              <div className="flex flex-col h-screen justify-between w-full">
-                <div className="flex flex-col items-center justify-end gap-5 p-0 m-0 min-h-120 max-h-120">
-                  {isHouseBusted && (
-                    <p className="italic text-[2.5rem] p-0 m-0 text-center">
-                      House busted
-                    </p>
-                  )}
-                  <div className="min-h-80">
-                    <div className="w-24 h-36 sm:w-32 sm:h-48 md:w-36 md:h-52 lg:w-40 lg:h-56 relative select-none">
-                      {houseCards.map((card, index) => {
-                        const topOffset = 24;
-                        const leftOffset = 16;
-                        return (
-                          <div
-                            className="w-full h-auto absolute transition-all duration-300"
-                            style={{
-                              top: `${topOffset * index}px`,
-                              left: `${leftOffset * index}px`,
-                              zIndex: index,
-                            }}
-                            key={card}
-                          >
-                            <img
-                              src={`/assets/SVG-cards-1.3/${card}.svg`}
-                              alt={card}
-                              className="w-full h-auto drop-shadow-md"
-                            />
-                          </div>
-                        );
-                      })}
+              <div className="flex flex-col h-screen justify-evenly w-full gap-0">
+                <div className="flex flex-col items-center justify-start gap-5 min-h-48 max-h-48">
+                  <div className="flex flex-col items-center justify-center gap-5">
+                    <div className="min-h-26">
+                      <div className="w-10 h-17 sm:w-14 sm:h-21 md:w-16 md:h-23 lg:w-18 lg:h-25 relative select-none">
+                        {houseCards.map((card, index) => {
+                          const topOffset = 13;
+                          const leftOffset = 15;
+                          return (
+                            <div
+                              className="w-full h-auto absolute transition-all duration-300"
+                              style={{
+                                top: `${topOffset * index}px`,
+                                left: `${leftOffset * index}px`,
+                                zIndex: index,
+                              }}
+                              key={card}
+                            >
+                              <img
+                                src={`/assets/SVG-cards-1.3/${card}.svg`}
+                                alt={card}
+                                className="w-full h-auto drop-shadow-md"
+                              />
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <div className="pt-5 flex flex-col items-center justify-center">
+                      {!!totalHouseCount && (
+                        <div className="min-w-20 inline-flex items-center justify-center bg-zinc-950/80 px-5 border border-[#d4af37]/40 rounded-4xl shadow-xl backdrop-blur-xl">
+                          <p className="text-[14px] font-sans text-zinc-400 ">
+                            {totalHouseCount}
+                          </p>
+                        </div>
+                      )}
+                      {isHouseBusted && (
+                        <p className=" text-[1rem] p-0 m-0 text-center">
+                          House busted
+                        </p>
+                      )}
                     </div>
                   </div>
-                  {!!totalHouseCount && (
-                    <div className="m-0 min-w-30 items-center gap-5 bg-zinc-950/80 border border-[#d4af37]/40 rounded-4xl shadow-xl backdrop-blur-xl">
-                      <p className="text-[28px] text-center font-sans  text-zinc-400">
-                        {totalHouseCount}
-                      </p>
-                    </div>
-                  )}
                 </div>
-                <div className="flex flex-col items-center justify-end gap-5 min-h-170 max-h-170">
+                <div className="flex flex-col items-center justify-start gap-5 min-h-76 max-h-76 mt-5">
                   <div className="flex flex-row gap-24">
                     {playerCards.map((hand, index) => {
                       return (
@@ -417,14 +421,14 @@ function App() {
                 </div>
 
                 <div
-                  className="flex flex-row items-center justify-around gap-5 w-full max-h-70 border border-[#3d271d] p-2 rounded-full shadow-[0_10px_25px_rgba(0,0,0,0.8),inset_0_2px_4px_rgba(255,255,255,0.2)]"
+                  className="flex flex-row items-center justify-around gap-5 w-full h-25 border border-[#3d271d] p-1 rounded-full shadow-[0_10px_25px_rgba(0,0,0,0.8),inset_0_2px_4px_rgba(255,255,255,0.2)]"
                   style={{
                     background:
                       "linear-gradient(180deg, #a3724e 0%, #6e482f 40%, #4a2e1c 70%, #8c5d3a 100%)",
                   }}
                 >
                   <div
-                    className="w-full h-full rounded-full flex items-center justify-between px-10 relative overflow-hidden border border-[#23150d] shadow-[inset_0_4px_10px_rgba(0,0,0,0.9)]"
+                    className="w-full h-full rounded-full flex items-center justify-between px-5 relative overflow-hidden border border-[#23150d] shadow-[inset_0_4px_10px_rgba(0,0,0,0.9)]"
                     style={{
                       background:
                         "linear-gradient(180deg, #14191c 0%, #0a0d0f 40%, #050608 100%)",
@@ -432,27 +436,27 @@ function App() {
                   >
                     <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/3 to-transparent skew-x-12 pointer-events-none" />
                     <>
-                      <div className="w-70 flex flex-col items-center bg-zinc-950/80  px-6 py-4 rounded-4xl shadow-xl backdrop-blur-xl my-4">
-                        <span className="text-[24px] font-sans tracking-widest uppercase font-bold text-zinc-400">
+                      <div className="w-35 flex flex-col items-center px-3 py-2 rounded-xl my-0">
+                        <span className="text-[12px] font-sans tracking-widest uppercase font-bold text-zinc-400">
                           Bet Total
                         </span>
-                        <span className="text-[3rem]  text-zinc-200 drop-shadow-xl">
+                        <span className="text-[1.4rem] text-zinc-200 drop-shadow-xl">
                           ${betTotal}
                         </span>
                       </div>
                     </>
                     {!playerTurnEnded && !gameEnded && gameSetupDone && (
-                      <div className="flex flex-row gap-10 pt-1 m-0">
+                      <div className="flex flex-row gap-5 pt-1 m-0">
                         <button
                           onClick={handleHitAction}
-                          className="text-[2.5rem] min-w-45 rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
+                          className="text-[1.4rem] min-w-20 rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
                         >
                           Hit
                         </button>
                         {canSplit && (
                           <button
                             onClick={handleSplitAction}
-                            className="text-[2.5rem] min-w-45 rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
+                            className="text-[1.4rem] min-w-20 rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
                           >
                             Split
                           </button>
@@ -463,7 +467,7 @@ function App() {
                             playClickSound();
                             handleHandEnded();
                           }}
-                          className="text-[2.5rem] min-w-45 rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
+                          className="text-[1.4rem] min-w-20 rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-amber-600 to-amber-900 hover:from-amber-500 hover:to-amber-800 border border-amber-600 text-white font-bold tracking-wider shadow-[0_4px_15px_rgba(245,158,11,0.2)] active:scale-95 transition-all cursor-pointer"
                         >
                           Stand
                         </button>
@@ -471,7 +475,7 @@ function App() {
                     )}
                     {gameEnded && bankTotal > 0 && bankTotal != 0.5 && (
                       <button
-                        className="text-[2.5rem] rounded-[3rem] p-2 pl-8 pr-8 m-0 bg-linear-to-b from-amber-700 to-amber-950 hover:from-amber-600 hover:to-amber-800 border border-amber-600 text-amber-100 font-semibold shadow-md "
+                        className="text-[1.4rem] rounded-[3rem] p-2 pl-8 pr-8 m-0 bg-linear-to-b from-amber-700 to-amber-950 hover:from-amber-600 hover:to-amber-800 border border-amber-600 text-amber-100 font-semibold shadow-md "
                         onClick={handleReplay}
                       >
                         Play again
@@ -479,11 +483,11 @@ function App() {
                     )}
                     {gameEnded && bankTotal <= 0.5 && (
                       <div className="p-0 m-0 flex flex-col justify-center items-center gap-2">
-                        <p className="text-[24px] font-sans tracking-widest uppercase font-bold text-zinc-400">
+                        <p className="text-[12px] font-sans tracking-widest uppercase font-bold text-zinc-400">
                           GAME OVER! You lost all the money.
                         </p>
                         <button
-                          className="text-[2.5rem] rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-amber-700 to-amber-950 hover:from-amber-600 hover:to-amber-800 border border-amber-600 text-amber-100 font-semibold shadow-md "
+                          className="text-[1.4rem] rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-amber-700 to-amber-950 hover:from-amber-600 hover:to-amber-800 border border-amber-600 text-amber-100 font-semibold shadow-md "
                           onClick={async (e: MouseEvent) => {
                             e.preventDefault();
                             playClickSound();
@@ -499,77 +503,79 @@ function App() {
                         </button>
                       </div>
                     )}
-                    <div className="w-70 flex flex-col items-center bg-zinc-950/80 px-6 py-4 rounded-4xl shadow-xl backdrop-blur-xl my-4">
-                      <span className="text-[24px] font-sans tracking-widest uppercase font-bold text-zinc-400">
-                        Balance
-                      </span>
-                      <span className="text-[3rem]  text-zinc-200 drop-shadow-xl">
-                        ${bankTotal}
-                      </span>
-                    </div>
+                    <>
+                      <div className="w-35 flex flex-col items-center px-3 py-2 rounded-xl my-0">
+                        <span className="text-[12px] font-sans tracking-widest uppercase font-bold text-zinc-400">
+                          Balance
+                        </span>
+                        <span className="text-[1.4rem] text-zinc-200 drop-shadow-xl">
+                          ${bankTotal}
+                        </span>
+                      </div>
+                    </>
                   </div>
                 </div>
               </div>
             )}
             <div className="flex flex-col justify-between items-center gap-10">
               {!dealMade && (
-                <div className="flex flex-col items-center justify-between gap-5 min-w-250 h-170">
+                <div className="flex flex-col items-center justify-between gap-5 min-w-125 h-90">
                   <div
-                    className="mb-8  flex flex-row items-center justify-start gap-10 w-full max-h-70 border border-[#3d271d] p-2 rounded-[3rem] shadow-[0_10px_25px_rgba(0,0,0,0.8),inset_0_2px_4px_rgba(255,255,255,0.2)]"
+                    className="  flex flex-row items-center justify-start gap-10 w-130 min-h-45  border border-[#3d271d] p-2 rounded-[3rem] shadow-[0_10px_25px_rgba(0,0,0,0.8),inset_0_2px_4px_rgba(255,255,255,0.2)]"
                     style={{
                       background:
                         "linear-gradient(180deg, #a3724e 0%, #6e482f 40%, #4a2e1c 70%, #8c5d3a 100%)",
                     }}
                   >
                     <div
-                      className="w-full h-full rounded-[42px] flex items-center justify-between px-10 relative overflow-hidden border border-[#23150d] shadow-[inset_0_4px_10px_rgba(0,0,0,0.9)]"
+                      className="w-full h-full rounded-[42px] flex items-center justify-between px-5  relative overflow-hidden border border-[#23150d] shadow-[inset_0_4px_10px_rgba(0,0,0,0.9)]"
                       style={{
                         background:
                           "linear-gradient(180deg, #14191c 0%, #0a0d0f 40%, #050608 100%)",
                       }}
                     >
                       <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/3 to-transparent skew-x-12 pointer-events-none" />
-                      <div className="flex flex-col mt-10 mb-10">
-                        <div className="w-fit inline-flex items-center gap-5 m-0 p-0 bg-zinc-600/50  px-6 py-2 rounded-4xl shadow-xl backdrop-blur-xl my-4">
-                          <span className="text-[28px] font-sans tracking-widest uppercase font-bold text-zinc-400">
+                      <div className="flex flex-col justify-center gap-3 py-3">
+                        <div className="w-fit inline-flex items-center gap-5 m-0 p-0 bg-zinc-600/50  px-6 py-2 rounded-xl shadow-xl backdrop-blur-xl my-0">
+                          <span className="text-[14px] font-sans tracking-widest uppercase font-bold text-zinc-400">
                             Bet
                           </span>
-                          <span className="text-[2.5rem] text-zinc-200">
+                          <span className="text-[1.4rem] text-zinc-200">
                             ${initialBet.reduce((acc, cur) => acc + cur, 0)}
                           </span>
                         </div>
 
-                        <div className="w-fits inline-flex items-center gap-5 bg-zinc-600/50  px-6 py-2 rounded-4xl shadow-xl backdrop-blur-xl my-4">
-                          <span className="text-[28px] font-sans tracking-widest uppercase font-bold text-zinc-400">
+                        <div className="w-fits inline-flex items-center gap-5 bg-zinc-600/50  px-6 py-2 rounded-xl shadow-xl backdrop-blur-xl my-0 ">
+                          <span className="text-[14px] font-sans tracking-widest uppercase font-bold text-zinc-400">
                             Balance
                           </span>
-                          <span className="text-[2.5rem] text-zinc-200 drop-shadow-xl">
+                          <span className="text-[1.4rem] text-zinc-200 drop-shadow-xl">
                             ${bankTotal}
                           </span>
                         </div>
                       </div>
                       {!!initialBet[0] && (
-                        <div className="flex flex-row gap-10 justify-center items-center m-0">
+                        <div className="flex flex-row gap-12 justify-center items-center m-0">
                           <button
                             className={
                               latestChip === 500
-                                ? "text-[4rem] border-12 border-dashed bg-indigo-900 hover:bg-indigo-800 border-indigo-300 text-indigo-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                ? "text-[1.4rem] border-6 border-dashed bg-indigo-900 hover:bg-indigo-800 border-indigo-300 text-indigo-100 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                                 : latestChip === 100
-                                ? "text-[4rem] border-12 border-dashed bg-zinc-900 hover:bg-zinc-800 border-zinc-400 text-zinc-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                ? "text-[1.4rem] border-6 border-dashed bg-zinc-900 hover:bg-zinc-800 border-zinc-400 text-zinc-100 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                                 : latestChip === 25
-                                ? "text-[4rem] border-12 border-dashed bg-emerald-800 hover:bg-emerald-700 border-emerald-300 text-emerald-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                ? "text-[1.4rem] border-6 border-dashed bg-emerald-800 hover:bg-emerald-700 border-emerald-300 text-emerald-100 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                                 : latestChip === 5
-                                ? "text-[4rem] border-12 border-dashed bg-rose-700 hover:bg-rose-600 border-rose-300 text-rose-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
-                                : "text-[4rem] border-12 border-dashed bg-stone-100 hover:bg-stone-200 border-stone-400 text-stone-800 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                ? "text-[1.4rem] border-6 border-dashed bg-rose-700 hover:bg-rose-600 border-rose-300 text-rose-100 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                : "text-[1.4rem] border-6 border-dashed bg-stone-100 hover:bg-stone-200 border-stone-400 text-stone-800 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                             }
                             onClick={undoLatestBetChip}
                           >
                             {latestChip}
                           </button>
-                          <div className="flex flex-col gap-8">
+                          <div className="flex flex-col gap-3 py-3">
                             {!dealMade && (
                               <button
-                                className="text-[2.5rem] rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-amber-700 to-amber-950 hover:from-amber-600 hover:to-amber-800 border border-amber-600 text-amber-100 font-semibold shadow-md "
+                                className="text-[1.4rem] rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-amber-700 to-amber-950 hover:from-amber-600 hover:to-amber-800 border border-amber-600 text-amber-100 font-semibold shadow-md "
                                 onClick={handleDeal}
                               >
                                 Deal
@@ -577,7 +583,7 @@ function App() {
                             )}
                             {!!initialBet[0] && (
                               <button
-                                className="text-[2.5rem] rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-zinc-700 to-zinc-950 hover:from-zinc-600 hover:to-zinc-800 border border-zinc-500 text-zinc-100 font-bold tracking-wider shadow-[0_4px_15px_rgba(0,0,0,0.4)] active:scale-95 transition-all cursor-pointer"
+                                className="text-[1.4rem] rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-zinc-700 to-zinc-950 hover:from-zinc-600 hover:to-zinc-800 border border-zinc-500 text-zinc-100 font-bold tracking-wider shadow-[0_4px_15px_rgba(0,0,0,0.4)] active:scale-95 transition-all cursor-pointer"
                                 onClick={(e: MouseEvent) => {
                                   e.preventDefault();
                                   playClickSound();
@@ -596,7 +602,7 @@ function App() {
                     </div>
                   </div>
                   {bankTotal >= 0 && (
-                    <div className="flex flex-col items-center justify-start gap-15">
+                    <div className="flex flex-col items-center justify-start gap-5">
                       <div className="flex flex-row gap-4">
                         {chipDenominations.map((chip, index) => {
                           if (chip < bankTotal) {
@@ -614,14 +620,14 @@ function App() {
                                   }}
                                   className={
                                     chip === 500
-                                      ? "text-[4rem] border-12 border-dashed bg-indigo-900 hover:bg-indigo-800 border-indigo-300 text-indigo-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                      ? "text-[1.4rem] border-6 border-dashed bg-indigo-900 hover:bg-indigo-800 border-indigo-300 text-indigo-100 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                                       : chip === 100
-                                      ? "text-[4rem] border-12 border-dashed bg-zinc-900 hover:bg-zinc-800 border-zinc-400 text-zinc-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                      ? "text-[1.4rem] border-6 border-dashed bg-zinc-900 hover:bg-zinc-800 border-zinc-400 text-zinc-100 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                                       : chip === 25
-                                      ? "text-[4rem] border-12 border-dashed bg-emerald-800 hover:bg-emerald-700 border-emerald-300 text-emerald-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                      ? "text-[1.4rem] border-6 border-dashed bg-emerald-800 hover:bg-emerald-700 border-emerald-300 text-emerald-100 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                                       : chip === 5
-                                      ? "text-[4rem] border-12 border-dashed bg-rose-700 hover:bg-rose-600 border-rose-300 text-rose-100 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
-                                      : "text-[4rem] border-12 border-dashed bg-stone-100 hover:bg-stone-200 border-stone-400 text-stone-800 font-bold rounded-[50%] h-45 w-45 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                      ? "text-[1.4rem] border-6 border-dashed bg-rose-700 hover:bg-rose-600 border-rose-300 text-rose-100 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
+                                      : "text-[1.4rem] border-6 border-dashed bg-stone-100 hover:bg-stone-200 border-stone-400 text-stone-800 font-bold rounded-[50%] h-20 w-20 p-4 shadow-[2px_2px_0px_0px_rgba(0,0,0,1),4px_4px_0px_0px_rgba(0,0,0,0.8)]"
                                   }
                                 >
                                   {chip}
@@ -633,17 +639,17 @@ function App() {
                         })}
                       </div>
                       <div className="flex flex-row gap-4 m-0">
-                        {(bankTotal > 0 || bankTotal === 0.5) && (
+                        {(bankTotal > 0 || bankTotal !== 0.5) && (
                           <div className="flex flex-row gap-4">
                             <button
-                              className="text-[2.5rem] border border-red-500 rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-red-700 to-red-950 hover:from-red-600 hover:to-red-800 text-white font-bold tracking-widest shadow-[0_0_15px_rgba(220,38,38,0.3)"
+                              className="text-[1.4rem] border border-red-500 rounded-[3rem] p-2 pl-8 pr-8 bg-linear-to-b from-red-700 to-red-950 hover:from-red-600 hover:to-red-800 text-white font-bold tracking-widest shadow-[0_0_15px_rgba(220,38,38,0.3)"
                               onClick={handleAllIn}
                             >
                               ALL IN
                             </button>
                             {!!previousBet.length && !initialBet.length && (
                               <button
-                                className="text-[2.5rem] bg-linear-to-b from-amber-700 to-amber-950 hover:from-amber-600 hover:to-amber-800 border border-amber-600 text-amber-100 font-semibold shadow-md rounded-[3rem] p-2 pl-8 pr-8"
+                                className="text-[1.4rem] bg-linear-to-b from-amber-700 to-amber-950 hover:from-amber-600 hover:to-amber-800 border border-amber-600 text-amber-100 font-semibold shadow-md rounded-[3rem] p-2 pl-8 pr-8"
                                 onClick={handleRedoLastBet}
                               >
                                 Redo last bet
