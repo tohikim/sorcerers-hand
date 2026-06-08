@@ -7,14 +7,14 @@ import { BackgroundMusic } from "./components/BackgroundMusic.tsx";
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const OtherComponent = React.lazy(() =>
-  Promise.all([import("./App.tsx"), delay(1500)]).then(
+  Promise.all([import("./App.tsx"), delay(4500)]).then(
     ([moduleExports]) => moduleExports,
   ),
 );
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BackgroundMusic src="../public/vault_bgm.mp3" volume={0.7} />
+    <BackgroundMusic src="/vault_bgm.mp3" volume={0.7} />
 
     <Suspense
       fallback={
@@ -28,11 +28,7 @@ createRoot(document.getElementById("root")!).render(
           />
           <div className="w-64 h-64 md:w-80 md:h-80 max-w-full relative z-10 drop-shadow-[0_0_35px_rgba(234,179,8,0.2)]">
             {" "}
-            <DotLottieReact
-              src="../public/loadingAnimation.lottie"
-              autoplay
-              loop
-            />
+            <DotLottieReact src="/loadingAnimation.lottie" autoplay loop />
           </div>
           <p className="text-white text-[2rem] md:text-[3rem] tracking-wider animate-pulse mt-8 text-center relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
             {" "}

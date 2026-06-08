@@ -44,10 +44,10 @@ function App() {
   const totalHouseCount = getCardsCount(houseCards);
   const isHouseBusted = totalHouseCount > BUSTING_THRESHOLD;
 
-  const playClickSound = useSFX("../public/click2.mov", 0.5);
-  const playCashSound = useSFX("../public/cash.mov", 0.5);
-  const flipCardSound = useSFX("../public/flipcardSound.mov", 0.5);
-  const dealSound = useSFX("../public/dealSound.mov", 0.5);
+  const playClickSound = useSFX("/click2.mov", 0.5);
+  const playCashSound = useSFX("/cash.mov", 0.5);
+  const flipCardSound = useSFX("/flipcardSound.mov", 0.5);
+  const dealSound = useSFX("/dealSound.mov", 0.5);
 
   const gameSetupDone =
     playerCards[activeHandIndex >= 0 ? activeHandIndex : 0]?.cards.length >= 2;
@@ -297,7 +297,7 @@ function App() {
     <div
       className="relative min-h-screen h-full w-full overflow-y-auto flex items-center justify-center p-4 md:p-8 select-none bg-stone-900"
       style={{
-        backgroundImage: "url('../public/Harrypotter_bg.jpg')",
+        backgroundImage: "url('/Harrypotter_bg.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
