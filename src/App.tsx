@@ -345,7 +345,7 @@ function App() {
             </button>
           </>
         ) : (
-          <div className="flex flex-col items-center justify-center p-5 h-screen w-full">
+          <div className="flex flex-col items-center justify-center p-5 gap-10 h-screen w-full">
             {dealMade && (
               <div className="flex flex-col h-screen justify-evenly w-full gap-0">
                 <div className="flex flex-col items-center justify-start gap-5 min-h-48 max-h-48">
