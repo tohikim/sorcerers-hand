@@ -23,15 +23,15 @@ export const PlayerHand = ({
   handleWin,
   houseHasBlackjack,
   latestChip,
+  isActive,
 }: PlayerHandProps) => {
+  const [handState, setHandState] = useState<GameState>();
+  const [wonBet, setWonBet] = useState<number>();
+
   const totalPlayerCount = getCardsCount(cards);
   const isPlayerBusted = totalPlayerCount > BUSTING_THRESHOLD;
   const betTotal = betValues.reduce((acc, cur) => acc + cur, 0);
-
   const isHouseBusted = totalHouseCount > BUSTING_THRESHOLD;
-
-  const [handState, setHandState] = useState<GameState>();
-  const [wonBet, setWonBet] = useState<number>();
 
   useEffect(() => {
     const playerHasBlackjack =
@@ -94,13 +94,14 @@ export const PlayerHand = ({
               className={
                 handState === "Won"
                   ? "m-0 p-0 pl-5 font-sans text-[2rem] text-emerald-300"
-                  : handState === "Lost" &&
+                  : (handState === "Lost" || handState === "Busted") &&
                     "m-0 p-0 pl-5 font-sans text-[2rem] text-red-500"
               }
             >
               {handState === "Won"
                 ? `+$${(wonBet || 0) + betTotal}`
-                : handState === "Lost" && `-$${(wonBet || 0) + betTotal}`}
+                : (handState === "Lost" || handState === "Busted") &&
+                  `-$${(wonBet || 0) + betTotal}`}
             </p>
           </div>
         )}
@@ -132,11 +133,16 @@ export const PlayerHand = ({
         <div className="flex flex-col gap-5 justify-center items-center pt-10">
           {!!betValues.length && (
             <>
-              <div className="min-w-30 inline-flex items-center justify-between bg-zinc-950/80 px-10 gap-10 border border-[#d4af37]/40 rounded-4xl shadow-xl backdrop-blur-xl">
-                <span className="text-[28px] font-sans tracking-widest text-zinc-400  text-start">
+              <div className="min-w-30 inline-flex items-center justify-between bg-zinc-950/80 px-10 border border-[#d4af37]/40 rounded-4xl shadow-xl backdrop-blur-xl">
+                {isActive && (
+                  <span className="text-emerald-300 text-[2rem] p-0 pr-5 self-center">
+                    ●
+                  </span>
+                )}
+                <span className="text-[28px] font-sans tracking-widest text-zinc-400  text-start pr-10">
                   {totalPlayerCount}
                 </span>
-                <div className="h-6 border border-[#d4af37]/40"></div>
+                <div className="h-6 border border-[#d4af37]/40 mr-10"></div>
                 <span className="text-[2rem] text-yellow-400 text-end">
                   ${betTotal}
                 </span>
